@@ -20,17 +20,17 @@ module Elasticsearch
       #
       #     client.search index: 'myindex',
       #                   body: {
-      #                     query: { match: { title: 'test' } },
-      #                     aggregations: { tags: { terms: { field: 'tags' } } }
+      #                     :query => { :match => { :title => "test" } },
+      #                     :aggregations => { :tags => { :terms => { :field => "tags" } } }
       #                   }
       #
       # @example Paginating results: return 10 documents, beginning from the 10th
       #
       #     client.search index: 'myindex',
       #                   body: {
-      #                     query: { match: { title: 'test' } },
-      #                     from: 10,
-      #                     size: 10
+      #                     :query => { :match => { :title => "test" } },
+      #                     :from => 10,
+      #                     :size => 10
       #                   }
       #
       # @example Passing the search definition as a `String`, built with a JSON builder
@@ -54,8 +54,8 @@ module Elasticsearch
       #
       #     response = client.search index: 'myindex',
       #                              body: {
-      #                                query:  { match: { title: 'test' } },
-      #                                aggregations: { tags:  { terms: { field: 'tags' } } }
+      #                                :query => { :match => { :title => 'test' } },
+      #                                :aggregations => { :tags => { :terms => { :field => 'tags' } } }
       #                              }
       #
       #     response = Hashie::Mash.new response
@@ -171,37 +171,39 @@ module Elasticsearch
 
         method = "GET"
 
-        if !arguments.has_key? :type
-          arguments[:type] = ""
-        end
+        #if !arguments.has_key? :type
+        #  arguments[:type] = ""
+        #end
 
         if arguments.has_key? :body
           body = arguments[:body]
+          arguments.delete(:body)
         else
           body = nil
         end
 
-        if arguments.has_key? :fields
-          fields = arguments[:fields]
-        else
-          fields = ""
-        end
+        #if arguments.has_key? :fields
+        #  fields = arguments[:fields]
+        #else
+        #  fields = ""
+        #end
 
-        if arguments.has_key? :fielddata_fields
-          fielddata_fields = arguments[:fielddata_fields]
-        else
-          fielddata_fields = ""
-        end
+        #if arguments.has_key? :fielddata_fields
+        #  fielddata_fields = arguments[:fielddata_fields]
+        #else
+        #  fielddata_fields = ""
+        #end
 
-        path   = Utils.__pathify( Utils.__listify(arguments[:index].as(String)), "_search", Utils.__listify(arguments[:q].as(String)))
-        
+        #path   = Utils.__pathify( Utils.__listify(arguments[:index].as(String)), "_search", Utils.__listify(arguments[:q].as(String)))
+        path   = Utils.__pathify( Utils.__listify(arguments[:index].as(String)), "_search")
+
         params = Utils.__validate_and_extract_params arguments, valid_params
 
-        params[:fields] = Utils.__listify(fields.as(String), {:escape => false})
-        params[:fielddata_fields] = Utils.__listify(fielddata_fields.as(String), {:escape => false})
+        #params[:fields] = Utils.__listify(fields.as(String), {:escape => false})
+        #params[:fielddata_fields] = Utils.__listify(fielddata_fields.as(String), {:escape => false})
 
         # FIX: Unescape the `filter_path` parameter due to __listify default behavior. Investigate.
-        params[:filter_path] =  HTML.unescape(params[:filter_path].as(String)) if params.has_key?(:filter_path)
+        #params[:filter_path] =  HTML.unescape(params[:filter_path].as(String)) if params.has_key?(:filter_path)
 
         perform_request(method, path, params, body).body
       end
