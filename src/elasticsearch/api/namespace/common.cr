@@ -72,7 +72,7 @@ module Elasticsearch
           end
           
           @settings[:proto] ||= "http"
-          client = HTTP::Client.new("#{@settings[:proto]}://#{@settings[:host]}:#{settings[:port]}")
+          client = HTTP::Client.new("#{@settings[:proto]}://#{@settings[:host]}:#{@settings[:port]}")
           client.basic_auth(@settings[:username], @settings[:password]) if @settings.has_key?(:username)
 
           if method == "GET"
