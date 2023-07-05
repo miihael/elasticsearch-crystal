@@ -80,16 +80,16 @@ module Elasticsearch
             response = client.get(endpoint, body: post_data, headers: HTTP::Headers{"Content-Type" => "application/json"})
           elsif method == "POST"
             endpoint = "/#{path}"
-            response = client.post(url: endpoint, body: post_data)
+            response = client.post(endpoint, body: post_data)
           elsif method == "PUT"
             endpoint = "/#{path}"
-            response = client.put(url: endpoint, body: post_data)
+            response = client.put(endpoint, body: post_data)
           elsif method == "DELETE"
             endpoint = "/#{path}?#{final_params}"
-            response = client.delete(url: endpoint)
+            response = client.delete(endpoint)
           elsif method == "HEAD"
             endpoint = "/#{path}"
-            response = client.head(url: endpoint)
+            response = client.head(endpoint)
           end
 
           result = response.as(HTTP::Client::Response)
