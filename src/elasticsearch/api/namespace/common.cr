@@ -1,5 +1,6 @@
 require "http/client"
 require "json"
+require "uri"
 
 module Elasticsearch
   module API
@@ -72,7 +73,7 @@ module Elasticsearch
           end
           
           @settings[:proto] ||= "http"
-          client = HTTP::Client.new("#{@settings[:proto]}://#{@settings[:host]}:#{@settings[:port]}")
+          client = HTTP::Client.new(uri: URI.new(@settings[:proto].to_s, @settings[:host].to_s, @settings[:port].to_i))
           client.basic_auth(@settings[:username], @settings[:password]) if @settings.has_key?(:username)
 
           if method == "GET"
