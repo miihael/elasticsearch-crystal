@@ -70,22 +70,26 @@ module Elasticsearch
           else
             post_data = nil
           end
-           
+          
+          @settings[:proto] ||= "http"
+          client = HTTP::Client.new("#{@settings[:proto]}://#{@settings[:host]}:#{settings[:port]}")
+          client.basic_auth(@settings[:username], @settings[:password]) if @settings.has_key?(:username)
+
           if method == "GET"
-            endpoint = "http://#{@settings[:host]}:#{@settings[:port]}/#{path}?#{final_params}"
-            response = HTTP::Client.get(endpoint, body: post_data, headers: HTTP::Headers{"Content-Type" => "application/json"})
+            endpoint = "/#{path}?#{final_params}"
+            response = client.get(endpoint, body: post_data, headers: HTTP::Headers{"Content-Type" => "application/json"})
           elsif method == "POST"
-            endpoint = "http://#{@settings[:host]}:#{@settings[:port]}/#{path}"
-            response = HTTP::Client.post(url: endpoint, body: post_data)
+            endpoint = "/#{path}"
+            response = client.post(url: endpoint, body: post_data)
           elsif method == "PUT"
-            endpoint = "http://#{@settings[:host]}:#{@settings[:port]}/#{path}"
-            response = HTTP::Client.put(url: endpoint, body: post_data)
+            endpoint = "/#{path}"
+            response = client.put(url: endpoint, body: post_data)
           elsif method == "DELETE"
-            endpoint = "http://#{@settings[:host]}:#{@settings[:port]}/#{path}?#{final_params}"
-            response = HTTP::Client.delete(url: endpoint)
+            endpoint = "/#{path}?#{final_params}"
+            response = client.delete(url: endpoint)
           elsif method == "HEAD"
-            endpoint = "http://#{@settings[:host]}:#{@settings[:port]}/#{path}"
-            response = HTTP::Client.head(url: endpoint)
+            endpoint = "/#{path}"
+            response = client.head(url: endpoint)
           end
 
           result = response.as(HTTP::Client::Response)
